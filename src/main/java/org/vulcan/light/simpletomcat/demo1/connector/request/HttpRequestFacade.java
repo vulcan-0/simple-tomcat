@@ -64,7 +64,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getContextPath() {
-        return null;
+        return ((HttpRequest) request).getContextPath();
     }
 
     public String getQueryString() {
@@ -88,7 +88,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getRequestURI() {
-        return null;
+        return ((HttpRequest) request).getRequestURI();
     }
 
     public StringBuffer getRequestURL() {
@@ -96,7 +96,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getServletPath() {
-        return null;
+        return ((HttpRequest) request).getServletPath();
     }
 
     public HttpSession getSession(boolean create) {

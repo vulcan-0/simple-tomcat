@@ -72,7 +72,7 @@ public class HttpResponse implements HttpServletResponse {
         }
     }
 
-    private String getHeaderString() {
+    public String getHeaderString() {
         StringBuffer headerBuffer = new StringBuffer();
         for (String name : headers.keySet()) {
             String value = headers.get(name);

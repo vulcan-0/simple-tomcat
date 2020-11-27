@@ -2,6 +2,8 @@ package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
+import org.vulcan.light.simpletomcat.demo1.container.Contained;
+import org.vulcan.light.simpletomcat.demo1.container.Container;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -12,9 +14,11 @@ import java.util.concurrent.*;
  * @author luxiaocong
  * @createdOn 2020/11/10
  */
-public class HttpConnector implements Runnable {
+public class HttpConnector implements Contained, Runnable {
 
     private Logger logger = new Logger(this.getClass());
+
+    private Container container;
 
     private boolean stopped;
 
@@ -44,6 +48,7 @@ public class HttpConnector implements Runnable {
                 Socket socket = serverSocket.accept();
                 logger.info("Receive socket: " + socket);
                 TcpConnection connection = TcpConnectionPool.get();
+                connection.setContainer(container);
                 connection.setSocket(socket);
                 executor.execute(connection);
             } catch (IOException e) {
@@ -55,8 +60,17 @@ public class HttpConnector implements Runnable {
     }
 
     public void start() {
+        container.start();
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    public void setContainer(Container container) {
+        this.container = container;
+    }
+
+    public Container getContainer() {
+        return this.container;
     }
 
 }

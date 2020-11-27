@@ -1,6 +1,15 @@
 package org.vulcan.light.simpletomcat.demo1;
 
+import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.connector.HttpConnector;
+import org.vulcan.light.simpletomcat.demo1.container.Context;
+import org.vulcan.light.simpletomcat.demo1.container.Engine;
+import org.vulcan.light.simpletomcat.demo1.container.Host;
+import org.vulcan.light.simpletomcat.demo1.container.Wrapper;
+import org.vulcan.light.simpletomcat.demo1.container.standard.StandardContext;
+import org.vulcan.light.simpletomcat.demo1.container.standard.StandardEngine;
+import org.vulcan.light.simpletomcat.demo1.container.standard.StandardHost;
+import org.vulcan.light.simpletomcat.demo1.container.standard.StandardWrapper;
 
 /**
  * @author luxiaocong
@@ -24,7 +33,23 @@ public class HttpServer {
     public static void main(String[] args) {
         System.out.println(simpleServletContainer);
 
+        Wrapper wrapper = new StandardWrapper();
+        wrapper.setName("/PrimitiveServlet");
+
+        Context context = new StandardContext();
+        context.setName("/servlet");
+        context.addChild(wrapper);
+
+        Host host = new StandardHost();
+        host.setName(Constants.DEFAULT_HOST_NAME);
+        host.addChild(context);
+
+        Engine engine = new StandardEngine();
+        engine.setName(Constants.DEFAULT_ENGINE_NAME);
+        engine.addChild(host);
+
         HttpConnector connector = new HttpConnector();
+        connector.setContainer(engine);
         connector.start();
     }
 

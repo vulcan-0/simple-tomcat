@@ -20,6 +20,8 @@ public class HttpRequest implements HttpServletRequest {
     private InputStream input;
 
     private String uri;
+    String contextPath;
+    String servletPath;
 
     private Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>();
 
@@ -38,6 +40,12 @@ public class HttpRequest implements HttpServletRequest {
             if (index2 > index1) {
                 uri = requestString.substring(index1 + 1, index2);
             }
+        }
+
+        int pos1 = uri.indexOf("/", 1);
+        if (pos1 > 0) {
+            contextPath = uri.substring(0, pos1);
+            servletPath = uri.substring(pos1);
         }
     }
 
@@ -105,7 +113,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getContextPath() {
-        return null;
+        return contextPath;
     }
 
     public String getQueryString() {
@@ -129,7 +137,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getRequestURI() {
-        return null;
+        return uri;
     }
 
     public StringBuffer getRequestURL() {
@@ -137,7 +145,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getServletPath() {
-        return null;
+        return servletPath;
     }
 
     public HttpSession getSession(boolean create) {

@@ -5,4 +5,9 @@ package org.vulcan.light.simpletomcat.demo1.lifecycle;
  * @createdOn 2020/11/7
  */
 public interface Lifecycle {
+
+    void start();
+
+    void stop();
+
 }

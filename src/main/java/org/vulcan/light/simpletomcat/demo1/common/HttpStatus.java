@@ -17,7 +17,13 @@ public enum HttpStatus {
     /**
      * 404
      */
-    STATUS_404(404, "File Not Found");
+    STATUS_404(404, "File Not Found"),
+    /**
+     * 500
+     */
+    STATUS_500(500, "Server Internal Error");
+
+
 
     private int sc;
 

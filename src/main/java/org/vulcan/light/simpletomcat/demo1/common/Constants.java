@@ -9,6 +9,8 @@ import java.io.File;
 public class Constants {
 
     public static final int SERVER_PORT = 8080;
+    public static final String DEFAULT_ENGINE_NAME = "localhost";
+    public static final String DEFAULT_HOST_NAME = "localhost";
 
     public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "/webroot";
 
@@ -45,5 +47,7 @@ public class Constants {
             "%s" +
             "\r\n" +
             "<h1>File Not Found</h1>";
+
+    public static final String ERROR_MESSAGE_500 = "<h1>An error occurred on the server: %s</h1>";
 
 }
