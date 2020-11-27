@@ -1,13 +1,6 @@
 package org.vulcan.light.simpletomcat.demo1;
 
-import org.vulcan.light.simpletomcat.demo1.request.Request;
-import org.vulcan.light.simpletomcat.demo1.response.Response;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.ServerSocket;
-import java.net.Socket;
+import org.vulcan.light.simpletomcat.demo1.connector.HttpConnector;
 
 /**
  * @author luxiaocong
@@ -15,51 +8,24 @@ import java.net.Socket;
  */
 public class HttpServer {
 
+    private static String simpleServletContainer = "\n" +
+            "   _____ _                 __        _____                 __     __     ______            __        _                \n" +
+            "  / ___/(_____ ___  ____  / ___     / ___/___  ______   __/ ___  / /_   / ________  ____  / /_____ _(_____  ___  _____\n" +
+            "  \\__ \\/ / __ `__ \\/ __ \\/ / _ \\    \\__ \\/ _ \\/ ___| | / / / _ \\/ __/  / /   / __ \\/ __ \\/ __/ __ `/ / __ \\/ _ \\/ ___/\n" +
+            " ___/ / / / / / / / /_/ / /  __/   ___/ /  __/ /   | |/ / /  __/ /_   / /___/ /_/ / / / / /_/ /_/ / / / / /  __/ /    \n" +
+            "/____/_/_/ /_/ /_/ .___/_/\\___/   /____/\\___/_/    |___/_/\\___/\\__/   \\____/\\____/_/ /_/\\__/\\__,_/_/_/ /_/\\___/_/     \n" +
+            "                /_/                                                                                                   " +
+            "\n";
+
     private static final String SHUTDOWN_COMMAND = "/SHUTDOWN";
 
     private boolean shutdown = false;
 
-    public void await() {
-        ServerSocket serverSocket = null;
-        try {
-            serverSocket = new ServerSocket(8080);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-
-        while (!shutdown) {
-            try {
-                Socket socket = serverSocket.accept();
-                InputStream input = socket.getInputStream();
-                OutputStream output = socket.getOutputStream();
-
-                Request request = new Request(input);
-                request.parse();
-
-                Response response = new Response(output);
-                response.setRequest(request);
-
-                if (request.getUri() != null && request.getUri().startsWith("/servlet/")) {
-                    ServletProcessor servletProcessor = new ServletProcessor();
-                    servletProcessor.process(request, response);
-                } else {
-                    StaticResourceProcessor staticResourceProcessor = new StaticResourceProcessor();
-                    staticResourceProcessor.process(request, response);
-                }
-
-                socket.close();
-
-                shutdown = SHUTDOWN_COMMAND.equals(request.getUri());
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public static void main(String[] args) {
-        HttpServer httpServer = new HttpServer();
-        httpServer.await();
+        System.out.println(simpleServletContainer);
+
+        HttpConnector connector = new HttpConnector();
+        connector.start();
     }
 
 }

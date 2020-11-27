@@ -1,9 +1,12 @@
 package org.vulcan.light.simpletomcat.demo1.request;
 
 import javax.servlet.*;
+import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.security.Principal;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Locale;
 import java.util.Map;
@@ -12,12 +15,140 @@ import java.util.Map;
  * @author luxiaocong
  * @createdOn 2020/11/9
  */
-public class RequestFacade implements ServletRequest {
+public class HttpRequestFacade implements HttpServletRequest {
 
     private ServletRequest request;
 
-    public RequestFacade(Request request) {
+    public HttpRequestFacade(HttpRequest request) {
         this.request = request;
+    }
+
+    public String getAuthType() {
+        return null;
+    }
+
+    public Cookie[] getCookies() {
+        return new Cookie[0];
+    }
+
+    public long getDateHeader(String name) {
+        return 0;
+    }
+
+    public String getHeader(String name) {
+        return null;
+    }
+
+    public Enumeration<String> getHeaders(String name) {
+        return null;
+    }
+
+    public Enumeration<String> getHeaderNames() {
+        return null;
+    }
+
+    public int getIntHeader(String name) {
+        return 0;
+    }
+
+    public String getMethod() {
+        return null;
+    }
+
+    public String getPathInfo() {
+        return null;
+    }
+
+    public String getPathTranslated() {
+        return null;
+    }
+
+    public String getContextPath() {
+        return null;
+    }
+
+    public String getQueryString() {
+        return null;
+    }
+
+    public String getRemoteUser() {
+        return null;
+    }
+
+    public boolean isUserInRole(String role) {
+        return false;
+    }
+
+    public Principal getUserPrincipal() {
+        return null;
+    }
+
+    public String getRequestedSessionId() {
+        return null;
+    }
+
+    public String getRequestURI() {
+        return null;
+    }
+
+    public StringBuffer getRequestURL() {
+        return null;
+    }
+
+    public String getServletPath() {
+        return null;
+    }
+
+    public HttpSession getSession(boolean create) {
+        return null;
+    }
+
+    public HttpSession getSession() {
+        return null;
+    }
+
+    public String changeSessionId() {
+        return null;
+    }
+
+    public boolean isRequestedSessionIdValid() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromCookie() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromURL() {
+        return false;
+    }
+
+    public boolean isRequestedSessionIdFromUrl() {
+        return false;
+    }
+
+    public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
+        return false;
+    }
+
+    public void login(String username, String password) throws ServletException {
+
+    }
+
+    public void logout() throws ServletException {
+
+    }
+
+    public Collection<Part> getParts() throws IOException, ServletException {
+        return null;
+    }
+
+    public Part getPart(String name) throws IOException, ServletException {
+        return null;
+    }
+
+    public <T extends HttpUpgradeHandler> T upgrade(Class<T> handlerClass) throws IOException, ServletException {
+        return null;
     }
 
     public Object getAttribute(String name) {

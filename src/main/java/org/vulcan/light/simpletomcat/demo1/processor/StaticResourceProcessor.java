@@ -1,7 +1,7 @@
-package org.vulcan.light.simpletomcat.demo1;
+package org.vulcan.light.simpletomcat.demo1.processor;
 
-import org.vulcan.light.simpletomcat.demo1.request.Request;
-import org.vulcan.light.simpletomcat.demo1.response.Response;
+import org.vulcan.light.simpletomcat.demo1.request.HttpRequest;
+import org.vulcan.light.simpletomcat.demo1.response.HttpResponse;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class StaticResourceProcessor {
 
-    public void process(Request request, Response response) {
+    public void process(HttpRequest request, HttpResponse response) {
         try {
             response.sendStaticResource();
         } catch (IOException e) {

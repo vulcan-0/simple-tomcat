@@ -1,8 +1,11 @@
 package org.vulcan.light.simpletomcat.demo1.servlet;
 
-import org.vulcan.light.simpletomcat.demo1.Constants;
+import org.vulcan.light.simpletomcat.demo1.common.Constants;
+import org.vulcan.light.simpletomcat.demo1.common.HttpStatus;
+import org.vulcan.light.simpletomcat.demo1.common.Logger;
 
 import javax.servlet.*;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -12,23 +15,34 @@ import java.io.PrintWriter;
  */
 public class PrimitiveServlet implements Servlet {
 
+    private Logger logger = new Logger(this.getClass());
+
     public void init(ServletConfig servletConfig) throws ServletException {
-        System.out.println("init");
+        logger.debug("init");
     }
 
     public void service(ServletRequest request, ServletResponse response) throws ServletException, IOException {
-        System.out.println("service");
+        logger.debug("service");
+
+        HttpServletResponse httpResponse = (HttpServletResponse) response;
+        httpResponse.setStatus(HttpStatus.STATUS_201.getSc());
+        httpResponse.setContentType(Constants.APPLICATION_JSON);
+        httpResponse.setCharacterEncoding("utf-8");
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         PrintWriter out = response.getWriter();
-        String body = "<h1>Run PrimitiveServlet</h1>";
-        String header = String.format(Constants.SUCCESS_MESSAGE_HEADER, body.length());
-        out.println(header);
+        String body = "{\"aaa\":\"bbb\"}";
         out.println(body);
         out.flush();
     }
 
     public void destroy() {
-        System.out.println("destroy");
+        logger.debug("destroy");
     }
 
     public ServletConfig getServletConfig() {
