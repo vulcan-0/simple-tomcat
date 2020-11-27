@@ -20,16 +20,16 @@ public class Constants {
     public static final String TEXT_HTML = "text/html";
     public static final String APPLICATION_JSON = "application/json";
 
-    public static final int CORE_POOL_SIZE = 25;
-    public static final int MAXIMUM_POOL_SIZE = 150;
-    public static final long KEEP_ALIVE_TIME = 20000;
-
     public static final String KEEP_ALIVE = "keep-alive";
     public static final int DEFAULT_KEEP_ALIVE_TIME = 60000;
     public static final int DEFAULT_KEEP_ALIVE_INTERVAL = 20;
 
-    public static final int CORE_PROCESSOR_SIZE = 200;
-    public static final int MAX_PROCESSOR_SIZE = 1000;
+    public static final int DEFAULT_CORE_POOL_SIZE = 25;
+    public static final int DEFAULT_MAX_POOL_SIZE = 150;
+    public static final long DEFAULT_THREAD_KEEP_ALIVE_TIME = 20000;
+
+    public static final int DEFAULT_CORE_CONNECTION_SIZE = 200;
+    public static final int DEFAULT_MAX_CONNECTION_SIZE = 1000;
 
     public static final String SUCCESS_MESSAGE_HEADER = "HTTP/1.1 200 OK\r\n" +
             "Content-Type: text/html\r\n" +

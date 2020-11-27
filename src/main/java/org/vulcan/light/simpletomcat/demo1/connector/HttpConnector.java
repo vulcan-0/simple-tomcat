@@ -2,8 +2,6 @@ package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
-import org.vulcan.light.simpletomcat.demo1.processor.TcpConnection;
-import org.vulcan.light.simpletomcat.demo1.processor.TcpConnectionPool;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -26,9 +24,9 @@ public class HttpConnector implements Runnable {
         return scheme;
     }
 
-    private Executor executor = new ThreadPoolExecutor(Constants.CORE_POOL_SIZE,
-            Constants.MAXIMUM_POOL_SIZE,
-            Constants.KEEP_ALIVE_TIME,
+    private Executor executor = new ThreadPoolExecutor(Constants.DEFAULT_CORE_POOL_SIZE,
+            Constants.DEFAULT_MAX_POOL_SIZE,
+            Constants.DEFAULT_THREAD_KEEP_ALIVE_TIME,
             TimeUnit.MILLISECONDS,
             new LinkedBlockingQueue<Runnable>());
 

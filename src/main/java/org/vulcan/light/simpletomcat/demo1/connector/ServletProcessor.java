@@ -1,11 +1,11 @@
-package org.vulcan.light.simpletomcat.demo1.processor;
+package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.HttpStatus;
-import org.vulcan.light.simpletomcat.demo1.request.HttpRequest;
-import org.vulcan.light.simpletomcat.demo1.request.HttpRequestFacade;
-import org.vulcan.light.simpletomcat.demo1.response.HttpResponse;
-import org.vulcan.light.simpletomcat.demo1.response.HttpResponseFacade;
+import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
+import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequestFacade;
+import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
+import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponseFacade;
 
 import javax.servlet.Servlet;
 import java.io.File;
@@ -90,7 +90,7 @@ public class ServletProcessor {
             response.setHeader(Constants.CONNECTION, Constants.KEEP_ALIVE);
 
             servlet.service(requestFacade, responseFacade);
-            if (response.getContentLength() < 0) {
+            if (response.getContentLength() == 0) {
                 response.setContentLengthLong(response.getBodyLength());
             }
             response.finishResponse();

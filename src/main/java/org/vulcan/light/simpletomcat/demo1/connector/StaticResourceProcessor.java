@@ -1,7 +1,7 @@
-package org.vulcan.light.simpletomcat.demo1.processor;
+package org.vulcan.light.simpletomcat.demo1.connector;
 
-import org.vulcan.light.simpletomcat.demo1.request.HttpRequest;
-import org.vulcan.light.simpletomcat.demo1.response.HttpResponse;
+import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
+import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
 
 import java.io.IOException;
 

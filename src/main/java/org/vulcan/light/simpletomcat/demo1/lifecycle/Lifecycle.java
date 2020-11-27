@@ -1,4 +1,4 @@
-package org.vulcan.light.simpletomcat.demo1;
+package org.vulcan.light.simpletomcat.demo1.lifecycle;
 
 /**
  * @author luxiaocong

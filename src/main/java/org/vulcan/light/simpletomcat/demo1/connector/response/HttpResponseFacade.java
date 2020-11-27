@@ -1,4 +1,4 @@
-package org.vulcan.light.simpletomcat.demo1.response;
+package org.vulcan.light.simpletomcat.demo1.connector.response;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;

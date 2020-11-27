@@ -1,9 +1,9 @@
-package org.vulcan.light.simpletomcat.demo1.processor;
+package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
-import org.vulcan.light.simpletomcat.demo1.request.HttpRequest;
-import org.vulcan.light.simpletomcat.demo1.response.HttpResponse;
+import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
+import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
 
 import java.io.*;
 import java.net.Socket;
@@ -51,11 +51,12 @@ public class TcpConnection implements Runnable {
         InputStream input = socket.getInputStream();
         OutputStream output = socket.getOutputStream();
 
-        request = new HttpRequest(input);
         BufferedReader reader = new BufferedReader(new InputStreamReader(input));
         if (reader.ready()) {
             keepIt = false;
             keepAliveTime = Constants.DEFAULT_KEEP_ALIVE_TIME;
+
+            request = new HttpRequest(input);
             parseRequest(reader, output);
             parseHeaders(reader);
 
@@ -86,9 +87,9 @@ public class TcpConnection implements Runnable {
         while (reader.ready()) {
             String line = reader.readLine();
             if (line != null && !line.equals("")) {
-                String[] arr = line.split(": ");
+                String[] arr = line.split(":");
                 if (arr.length == 2) {
-                    request.setHeader(arr[0], arr[1]);
+                    request.setHeader(arr[0].trim(), arr[1].trim());
                     logger.console(line, Logger.ANSI_YELLOW);
                 }
             }

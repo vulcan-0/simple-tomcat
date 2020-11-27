@@ -1,26 +1,67 @@
-package org.vulcan.light.simpletomcat.demo1.request;
+package org.vulcan.light.simpletomcat.demo1.connector.request;
+
+import org.vulcan.light.simpletomcat.demo1.common.Constants;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.security.Principal;
-import java.util.Collection;
-import java.util.Enumeration;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author luxiaocong
- * @createdOn 2020/11/9
+ * @createdOn 2020/11/7
  */
-public class HttpRequestFacade implements HttpServletRequest {
+public class HttpRequest implements HttpServletRequest {
 
-    private ServletRequest request;
+    private InputStream input;
 
-    public HttpRequestFacade(HttpRequest request) {
-        this.request = request;
+    private String uri;
+
+    private Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>();
+
+    public HttpRequest(InputStream input) {
+        this.input = input;
+    }
+
+    /**
+     * @param requestString like: GET /index.html HTTP/1.1
+     */
+    public void parseUri(String requestString) {
+        int index1, index2;
+        index1 = requestString.indexOf(" ");
+        if (index1 != -1) {
+            index2 = requestString.indexOf(" ", index1 + 1);
+            if (index2 > index1) {
+                uri = requestString.substring(index1 + 1, index2);
+            }
+        }
+    }
+
+    public void setHeader(String name, String value) {
+        List<String> values = headers.get(name);
+        if (values == null) {
+            values = new ArrayList<String>();
+            headers.put(name, values);
+        }
+        values.add(value);
+    }
+
+    public String getUri() {
+        return uri;
+    }
+
+    public boolean isAlive() {
+        List<String> values = headers.get(Constants.CONNECTION);
+        if (values != null && !values.isEmpty()) {
+            if (Constants.KEEP_ALIVE.equals(values.get(values.size() - 1))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getAuthType() {

@@ -1,4 +1,4 @@
-package org.vulcan.light.simpletomcat.demo1.processor;
+package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
@@ -25,19 +25,19 @@ public class TcpConnectionPool {
     public static synchronized TcpConnection get() {
         TcpConnection tcpConnection = queue.poll();
         if (tcpConnection == null) {
-            if (count < Constants.MAX_PROCESSOR_SIZE) {
+            if (count < Constants.DEFAULT_MAX_CONNECTION_SIZE) {
                 tcpConnection = new TcpConnection();
                 count++;
                 logger.info("Pool Size: " + count);
             } else {
-                throw new RuntimeException("Too many processor!");
+                throw new RuntimeException("Too many connection!");
             }
         }
         return tcpConnection;
     }
 
     public static synchronized void recycle(TcpConnection tcpConnection) {
-        if (count < Constants.CORE_PROCESSOR_SIZE) {
+        if (count < Constants.DEFAULT_CORE_CONNECTION_SIZE) {
             queue.add(tcpConnection);
         } else {
             count--;

@@ -1,8 +1,8 @@
-package org.vulcan.light.simpletomcat.demo1.response;
+package org.vulcan.light.simpletomcat.demo1.connector.response;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.HttpStatus;
-import org.vulcan.light.simpletomcat.demo1.request.HttpRequest;
+import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -23,13 +23,13 @@ public class HttpResponse implements HttpServletResponse {
 
     private OutputStream output;
 
-    private HttpRequest request;
-
     private HttpResponsePrintWriter writer;
 
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
+    private HttpRequest request;
 
     private int status;
+
+    private Map<String, String> headers = new LinkedHashMap<String, String>();
 
     public HttpResponse(OutputStream output) {
         this.output = output;
@@ -60,7 +60,8 @@ public class HttpResponse implements HttpServletResponse {
                     ch = fis.read(bytes, 0, BUFFER_SIZE);
                 }
             } else {
-                output.write(String.format(Constants.ERROR_MESSAGE_404, headerStr).getBytes());
+                String message = String.format(Constants.ERROR_MESSAGE_404, headerStr);
+                output.write(message.getBytes());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -201,7 +202,7 @@ public class HttpResponse implements HttpServletResponse {
         if (headers.get(Constants.CONTENT_LENGTH) != null) {
             return Long.valueOf(headers.get(Constants.CONTENT_LENGTH));
         }
-        return -1;
+        return 0;
     }
 
     public ServletOutputStream getOutputStream() throws IOException {
