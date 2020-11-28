@@ -19,6 +19,7 @@ public class HttpRequest implements HttpServletRequest {
 
     private InputStream input;
 
+    private String remoteAddr;
     private String uri;
     String contextPath;
     String servletPath;
@@ -27,6 +28,10 @@ public class HttpRequest implements HttpServletRequest {
 
     public HttpRequest(InputStream input) {
         this.input = input;
+    }
+
+    public void setRemoteAddr(String remoteAddr) {
+        this.remoteAddr = remoteAddr;
     }
 
     /**
@@ -89,11 +94,14 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public Enumeration<String> getHeaders(String name) {
+        if (headers.get(name) != null) {
+            return Collections.enumeration(headers.get(name));
+        }
         return null;
     }
 
     public Enumeration<String> getHeaderNames() {
-        return null;
+        return Collections.enumeration(headers.keySet());
     }
 
     public int getIntHeader(String name) {
@@ -269,7 +277,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getRemoteAddr() {
-        return null;
+        return remoteAddr;
     }
 
     public String getRemoteHost() {

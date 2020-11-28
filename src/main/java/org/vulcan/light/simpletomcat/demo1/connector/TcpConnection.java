@@ -4,10 +4,11 @@ import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
 import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
 import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
-import org.vulcan.light.simpletomcat.demo1.container.Contained;
-import org.vulcan.light.simpletomcat.demo1.container.Container;
+import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
+import org.vulcan.light.simpletomcat.demo1.container.core.Container;
 
 import java.io.*;
+import java.net.InetAddress;
 import java.net.Socket;
 
 /**
@@ -61,6 +62,7 @@ public class TcpConnection implements Contained, Runnable {
             keepAliveTime = Constants.DEFAULT_KEEP_ALIVE_TIME;
 
             request = new HttpRequest(input);
+            request.setRemoteAddr(getIp(socket));
             parseRequest(reader, output);
             parseHeaders(reader);
 
@@ -81,25 +83,27 @@ public class TcpConnection implements Contained, Runnable {
         }
     }
 
+    private String getIp(Socket socket) {
+        InetAddress inetAddress = socket.getInetAddress();
+        return inetAddress.toString();
+    }
+
     private void parseRequest(BufferedReader reader, OutputStream output) throws IOException {
         String requestString = reader.readLine();
-        logger.console(requestString, Logger.ANSI_YELLOW);
+        logger.info(requestString);
         request.parseUri(requestString);
     }
 
     private void parseHeaders(BufferedReader reader) throws IOException {
-        logger.console("#### Request Headers Start ###########################################", Logger.ANSI_YELLOW);
         while (reader.ready()) {
             String line = reader.readLine();
             if (line != null && !line.equals("")) {
                 String[] arr = line.split(":");
                 if (arr.length == 2) {
                     request.setHeader(arr[0].trim(), arr[1].trim());
-                    logger.console(line, Logger.ANSI_YELLOW);
                 }
             }
         }
-        logger.console("#### Request Headers End #############################################", Logger.ANSI_YELLOW);
     }
 
     private void release() {

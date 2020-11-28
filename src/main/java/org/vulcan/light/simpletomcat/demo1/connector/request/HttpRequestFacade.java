@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class HttpRequestFacade implements HttpServletRequest {
 
-    private ServletRequest request;
+    private HttpRequest request;
 
     public HttpRequestFacade(HttpRequest request) {
         this.request = request;
@@ -40,11 +40,11 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public Enumeration<String> getHeaders(String name) {
-        return null;
+        return ((HttpServletRequest) request).getHeaders(name);
     }
 
     public Enumeration<String> getHeaderNames() {
-        return null;
+        return ((HttpServletRequest) request).getHeaderNames();
     }
 
     public int getIntHeader(String name) {
@@ -64,7 +64,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getContextPath() {
-        return ((HttpRequest) request).getContextPath();
+        return request.getContextPath();
     }
 
     public String getQueryString() {
@@ -88,7 +88,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getRequestURI() {
-        return ((HttpRequest) request).getRequestURI();
+        return request.getRequestURI();
     }
 
     public StringBuffer getRequestURL() {
@@ -96,7 +96,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getServletPath() {
-        return ((HttpRequest) request).getServletPath();
+        return request.getServletPath();
     }
 
     public HttpSession getSession(boolean create) {
@@ -220,7 +220,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getRemoteAddr() {
-        return null;
+        return request.getRemoteAddr();
     }
 
     public String getRemoteHost() {

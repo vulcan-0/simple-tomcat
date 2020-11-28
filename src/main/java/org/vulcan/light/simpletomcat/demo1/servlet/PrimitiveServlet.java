@@ -38,6 +38,8 @@ public class PrimitiveServlet implements Servlet {
         PrintWriter out = response.getWriter();
         String body = "{\"aaa\":\"bbb\"}";
         out.println(body);
+
+        httpResponse.setContentLength(body.length());
         out.flush();
     }
 

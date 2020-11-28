@@ -8,10 +8,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.Collection;
-import java.util.LinkedHashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author luxiaocong
@@ -79,10 +76,6 @@ public class HttpResponse implements HttpServletResponse {
             headerBuffer.append(name).append(": ").append(value).append("\r\n");
         }
         return headerBuffer.toString();
-    }
-
-    public long getBodyLength() {
-        return writer.getBodyLength();
     }
 
     public void finishResponse() {
@@ -178,11 +171,14 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public Collection<String> getHeaders(String name) {
+        if (headers.get(name) != null) {
+            return Arrays.asList(headers.get(name));
+        }
         return null;
     }
 
     public Collection<String> getHeaderNames() {
-        return null;
+        return headers.keySet();
     }
 
     public String getCharacterEncoding() {
@@ -196,13 +192,6 @@ public class HttpResponse implements HttpServletResponse {
 
     public String getContentType() {
         return headers.get(Constants.CONTENT_TYPE);
-    }
-
-    public long getContentLength() {
-        if (headers.get(Constants.CONTENT_LENGTH) != null) {
-            return Long.valueOf(headers.get(Constants.CONTENT_LENGTH));
-        }
-        return 0;
     }
 
     public ServletOutputStream getOutputStream() throws IOException {

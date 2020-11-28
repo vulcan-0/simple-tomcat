@@ -6,8 +6,8 @@ import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
 import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequestFacade;
 import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
 import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponseFacade;
-import org.vulcan.light.simpletomcat.demo1.container.Contained;
-import org.vulcan.light.simpletomcat.demo1.container.Container;
+import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
+import org.vulcan.light.simpletomcat.demo1.container.core.Container;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -30,22 +30,12 @@ public class ServletProcessor implements Contained {
             response.setHeader(Constants.CONNECTION, Constants.KEEP_ALIVE);
 
             container.invoke(requestFacade, responseFacade);
-            if (response.getContentLength() == 0) {
-                response.setContentLengthLong(response.getBodyLength());
-            }
-            response.finishResponse();
         } catch (ServletException e) {
             e.printStackTrace();
-
-            response.setStatus(HttpStatus.STATUS_500.getSc());
-            response.setContentType(Constants.TEXT_HTML);
-            response.setHeader(Constants.CONNECTION, Constants.KEEP_ALIVE);
-            String message = String.format(Constants.ERROR_MESSAGE_500, e.getLocalizedMessage());
-            response.getWriter().write(message);
-            response.setContentLengthLong(response.getBodyLength());
-            response.finishResponse();
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            response.finishResponse();
         }
     }
 

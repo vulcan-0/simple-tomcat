@@ -2,14 +2,14 @@ package org.vulcan.light.simpletomcat.demo1;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.connector.HttpConnector;
-import org.vulcan.light.simpletomcat.demo1.container.Context;
-import org.vulcan.light.simpletomcat.demo1.container.Engine;
-import org.vulcan.light.simpletomcat.demo1.container.Host;
-import org.vulcan.light.simpletomcat.demo1.container.Wrapper;
+import org.vulcan.light.simpletomcat.demo1.container.core.*;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardContext;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardEngine;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardHost;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardWrapper;
+import org.vulcan.light.simpletomcat.demo1.container.value.ClientIpLoggerValue;
+import org.vulcan.light.simpletomcat.demo1.container.value.HeaderLoggerValue;
+import org.vulcan.light.simpletomcat.demo1.container.value.ServerInternalErrorValue;
 
 /**
  * @author luxiaocong
@@ -47,6 +47,13 @@ public class HttpServer {
         Engine engine = new StandardEngine();
         engine.setName(Constants.DEFAULT_ENGINE_NAME);
         engine.addChild(host);
+
+        ClientIpLoggerValue clientIpLoggerValue = new ClientIpLoggerValue();
+        ((ContainerBase) engine).addValue(clientIpLoggerValue);
+        HeaderLoggerValue headerLoggerValue = new HeaderLoggerValue();
+        ((ContainerBase) engine).addValue(headerLoggerValue);
+        ServerInternalErrorValue serverInternalErrorValue = new ServerInternalErrorValue();
+        ((ContainerBase) engine).addValue(serverInternalErrorValue);
 
         HttpConnector connector = new HttpConnector();
         connector.setContainer(engine);

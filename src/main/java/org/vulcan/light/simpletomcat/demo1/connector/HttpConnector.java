@@ -2,8 +2,8 @@ package org.vulcan.light.simpletomcat.demo1.connector;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
-import org.vulcan.light.simpletomcat.demo1.container.Contained;
-import org.vulcan.light.simpletomcat.demo1.container.Container;
+import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
+import org.vulcan.light.simpletomcat.demo1.container.core.Container;
 
 import java.io.IOException;
 import java.net.ServerSocket;

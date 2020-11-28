@@ -1,4 +1,4 @@
-package org.vulcan.light.simpletomcat.demo1.container;
+package org.vulcan.light.simpletomcat.demo1.container.core;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -87,7 +87,7 @@ public abstract class ContainerBase implements Container, Pipeline {
     }
 
     public Value[] getValues() {
-        return new Value[0];
+        return getPipeline().getValues();
     }
 
 }

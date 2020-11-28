@@ -9,6 +9,11 @@ import java.io.StringWriter;
  */
 public class Logger {
 
+    public static final String LEVEL_DEBUG = "DEBUG";
+    public static final String LEVEL_INFO = "INFO";
+    public static final String LEVEL_WARN = "WARN";
+    public static final String LEVEL_ERROR = "ERROR";
+
     public static final String ANSI_RESET = "\u001B[0m";
     public static final String ANSI_BLACK = "\u001B[30m";
     public static final String ANSI_RED = "\u001B[31m";
@@ -31,7 +36,7 @@ public class Logger {
      * @param message
      */
     public void debug(String message) {
-        System.out.println(ANSI_BLUE + getLogMessage(message) + ANSI_RESET);
+        System.out.println(ANSI_BLUE + getLogMessage(message, LEVEL_DEBUG) + ANSI_RESET);
     }
 
     /**
@@ -40,7 +45,7 @@ public class Logger {
      * @param message
      */
     public void info(String message) {
-        System.out.println(ANSI_GREEN + getLogMessage(message) + ANSI_RESET);
+        System.out.println(ANSI_GREEN + getLogMessage(message, LEVEL_INFO) + ANSI_RESET);
     }
 
     /**
@@ -49,7 +54,7 @@ public class Logger {
      * @param message
      */
     public void warning(String message) {
-        System.out.println(ANSI_YELLOW + getLogMessage(message) + ANSI_RESET);
+        System.out.println(ANSI_YELLOW + getLogMessage(message, LEVEL_WARN) + ANSI_RESET);
     }
 
     /**
@@ -58,7 +63,7 @@ public class Logger {
      * @param message
      */
     public void error(String message) {
-        System.out.println(ANSI_RED + getLogMessage(message) + ANSI_RESET);
+        System.out.println(ANSI_RED + getLogMessage(message, LEVEL_ERROR) + ANSI_RESET);
     }
 
     /**
@@ -68,7 +73,7 @@ public class Logger {
      * @param throwable
      */
     public void error(String message, Throwable throwable) {
-        System.out.println(ANSI_RED + getLogMessage(message));
+        System.out.println(ANSI_RED + getLogMessage(message, LEVEL_ERROR));
 
         StringWriter sw = new StringWriter();
         PrintWriter pw = new PrintWriter(sw);
@@ -85,11 +90,13 @@ public class Logger {
      * @param color
      */
     public void console(String message, String color) {
-        System.out.println(color + getLogMessage(message) + ANSI_RESET);
+        System.out.println(color + getLogMessage(message, null) + ANSI_RESET);
     }
 
-    private String getLogMessage(String message) {
-        return this.clazz.getName() + "[Thread-" + Thread.currentThread().getId() + "] : " + message;
+    private String getLogMessage(String message, String level) {
+        String str = String.format("%s[Thread-%d][%s]: %s", this.clazz.getName(),
+                Thread.currentThread().getId(), level, message);
+        return str;
     }
 
 }

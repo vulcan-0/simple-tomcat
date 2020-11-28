@@ -1,10 +1,10 @@
 package org.vulcan.light.simpletomcat.demo1.container.standard;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
-import org.vulcan.light.simpletomcat.demo1.container.Contained;
-import org.vulcan.light.simpletomcat.demo1.container.Container;
-import org.vulcan.light.simpletomcat.demo1.container.Value;
-import org.vulcan.light.simpletomcat.demo1.container.ValueContext;
+import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
+import org.vulcan.light.simpletomcat.demo1.container.core.Container;
+import org.vulcan.light.simpletomcat.demo1.container.core.Value;
+import org.vulcan.light.simpletomcat.demo1.container.core.ValueContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;

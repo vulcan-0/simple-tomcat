@@ -1,4 +1,4 @@
-package org.vulcan.light.simpletomcat.demo1.container;
+package org.vulcan.light.simpletomcat.demo1.container.core;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -39,6 +39,11 @@ public interface Pipeline {
      */
     void removeValue(Value value);
 
+    /**
+     * 获取全部阈
+     *
+     * @return
+     */
     Value[] getValues();
 
     /**

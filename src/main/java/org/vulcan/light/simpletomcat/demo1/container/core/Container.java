@@ -1,6 +1,6 @@
-package org.vulcan.light.simpletomcat.demo1.container;
+package org.vulcan.light.simpletomcat.demo1.container.core;
 
-import org.vulcan.light.simpletomcat.demo1.lifecycle.Lifecycle;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.Lifecycle;
 
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;

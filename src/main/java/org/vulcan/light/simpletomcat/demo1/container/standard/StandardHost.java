@@ -1,10 +1,9 @@
 package org.vulcan.light.simpletomcat.demo1.container.standard;
 
-import org.vulcan.light.simpletomcat.demo1.container.Container;
-import org.vulcan.light.simpletomcat.demo1.container.ContainerBase;
-import org.vulcan.light.simpletomcat.demo1.container.Host;
-import org.vulcan.light.simpletomcat.demo1.container.Pipeline;
-import org.vulcan.light.simpletomcat.demo1.lifecycle.Lifecycle;
+import org.vulcan.light.simpletomcat.demo1.container.core.Container;
+import org.vulcan.light.simpletomcat.demo1.container.core.ContainerBase;
+import org.vulcan.light.simpletomcat.demo1.container.core.Host;
+import org.vulcan.light.simpletomcat.demo1.container.core.Pipeline;
 
 /**
  * @author luxiaocong
@@ -20,9 +19,7 @@ public class StandardHost extends ContainerBase implements Host {
     public void start() {
         StandardHostValue basic = new StandardHostValue();
         basic.setContainer(this);
-        getPipeline().setBasic(basic);
-
-        ((Lifecycle) getPipeline()).start();
+        setBasic(basic);
 
         Container[] containers = findChildren();
         for (Container container : containers) {
@@ -31,8 +28,13 @@ public class StandardHost extends ContainerBase implements Host {
     }
 
     public void stop() {
-        getPipeline().setBasic(null);
+        setBasic(null);
         setPipeline(null);
+
+        Container[] containers = findChildren();
+        for (Container container : containers) {
+            container.stop();
+        }
     }
 
 }

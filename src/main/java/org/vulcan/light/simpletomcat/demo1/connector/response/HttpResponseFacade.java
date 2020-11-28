@@ -97,11 +97,11 @@ public class HttpResponseFacade implements HttpServletResponse {
     }
 
     public Collection<String> getHeaders(String name) {
-        return null;
+        return response.getHeaders(name);
     }
 
     public Collection<String> getHeaderNames() {
-        return null;
+        return response.getHeaderNames();
     }
 
     public String getCharacterEncoding() {
