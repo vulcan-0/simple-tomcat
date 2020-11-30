@@ -16,4 +16,18 @@ public interface Lifecycle {
      */
     void stop();
 
+    /**
+     * 添加生命周期事件监听器
+     *
+     * @param lifecycleListener
+     */
+    void addLifecycleListener(LifecycleListener lifecycleListener);
+
+    /**
+     * 移除生命周期事件监听器
+     *
+     * @param lifecycleListener
+     */
+    void removeLifecycleListener(LifecycleListener lifecycleListener);
+
 }

@@ -1,5 +1,9 @@
 package org.vulcan.light.simpletomcat.demo1.container.core;
 
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.LifecycleEvent;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.LifecycleListener;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.LifecycleSupport;
+
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
@@ -13,13 +17,15 @@ import java.util.Map;
  * @author luxiaocong
  * @createdOn 2020/11/27
  */
-public abstract class ContainerBase implements Container, Pipeline {
+public abstract class AbstractContainerBase implements Container, Pipeline {
 
     private String name;
     private Map<String, Container> containerMap = new HashMap<String, Container>();
     private List<Container> containerList = new ArrayList<Container>();
     private Container parent;
     private Pipeline pipeline;
+
+    protected LifecycleSupport lifecycleSupport = new LifecycleSupport(this);
 
     public void setName(String name) {
         this.name = name;
@@ -55,6 +61,27 @@ public abstract class ContainerBase implements Container, Pipeline {
 
     public Container getParent() {
         return this.parent;
+    }
+
+    public void addLifecycleListener(LifecycleListener lifecycleListener) {
+        lifecycleSupport.addLifecycleListener(lifecycleListener);
+    }
+
+    public void removeLifecycleListener(LifecycleListener lifecycleListener) {
+        lifecycleSupport.removeLifecycleListener(lifecycleListener);
+    }
+
+    protected void normalStopContainer() {
+        lifecycleSupport.fireLifecycleEvent(LifecycleEvent.BEFORE_STOP_EVENT, "");
+        setBasic(null);
+        setPipeline(null);
+
+        lifecycleSupport.fireLifecycleEvent(LifecycleEvent.STOP_EVENT, "");
+        Container[] containers = findChildren();
+        for (Container container : containers) {
+            container.stop();
+        }
+        lifecycleSupport.fireLifecycleEvent(LifecycleEvent.AFTER_STOP_EVENT, "");
     }
 
     public void setPipeline(Pipeline pipeline) {

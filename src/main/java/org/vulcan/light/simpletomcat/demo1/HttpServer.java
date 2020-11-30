@@ -3,6 +3,10 @@ package org.vulcan.light.simpletomcat.demo1;
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.connector.HttpConnector;
 import org.vulcan.light.simpletomcat.demo1.container.core.*;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleContextLifecycleListener;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleEngineLifecycleListener;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleHostLifecycleListener;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleWrapperLifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardContext;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardEngine;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardHost;
@@ -35,25 +39,29 @@ public class HttpServer {
 
         Wrapper wrapper = new StandardWrapper();
         wrapper.setName("/PrimitiveServlet");
+        wrapper.addLifecycleListener(new SimpleWrapperLifecycleListener());
 
         Context context = new StandardContext();
         context.setName("/servlet");
         context.addChild(wrapper);
+        context.addLifecycleListener(new SimpleContextLifecycleListener());
 
         Host host = new StandardHost();
         host.setName(Constants.DEFAULT_HOST_NAME);
         host.addChild(context);
+        host.addLifecycleListener(new SimpleHostLifecycleListener());
 
         Engine engine = new StandardEngine();
         engine.setName(Constants.DEFAULT_ENGINE_NAME);
         engine.addChild(host);
+        engine.addLifecycleListener(new SimpleEngineLifecycleListener());
 
         ClientIpLoggerValue clientIpLoggerValue = new ClientIpLoggerValue();
-        ((ContainerBase) engine).addValue(clientIpLoggerValue);
+        ((AbstractContainerBase) engine).addValue(clientIpLoggerValue);
         HeaderLoggerValue headerLoggerValue = new HeaderLoggerValue();
-        ((ContainerBase) engine).addValue(headerLoggerValue);
+        ((AbstractContainerBase) engine).addValue(headerLoggerValue);
         ServerInternalErrorValue serverInternalErrorValue = new ServerInternalErrorValue();
-        ((ContainerBase) engine).addValue(serverInternalErrorValue);
+        ((AbstractContainerBase) engine).addValue(serverInternalErrorValue);
 
         HttpConnector connector = new HttpConnector();
         connector.setContainer(engine);
