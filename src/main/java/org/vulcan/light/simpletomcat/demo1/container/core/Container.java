@@ -35,7 +35,7 @@ public interface Container extends Lifecycle {
     void addChild(Container container);
 
     /**
-     * 删除子容器
+     * 移除子容器
      *
      * @param container
      */

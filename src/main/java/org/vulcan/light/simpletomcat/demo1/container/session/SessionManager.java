@@ -25,7 +25,7 @@ public interface SessionManager {
     HttpSession findSession(String id);
 
     /**
-     * 获取所有session
+     * 获取全部session
      *
      * @return
      */

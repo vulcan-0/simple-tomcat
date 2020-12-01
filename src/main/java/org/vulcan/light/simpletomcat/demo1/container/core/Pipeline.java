@@ -33,7 +33,7 @@ public interface Pipeline {
     void addValue(Value value);
 
     /**
-     * 删除阈
+     * 移除阈
      *
      * @param value
      */

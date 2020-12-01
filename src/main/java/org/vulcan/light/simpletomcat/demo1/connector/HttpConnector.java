@@ -4,6 +4,8 @@ import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
 import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
 import org.vulcan.light.simpletomcat.demo1.container.core.Container;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.Lifecycle;
+import org.vulcan.light.simpletomcat.demo1.container.lifecycle.LifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.session.SessionManager;
 
 import java.io.IOException;
@@ -15,9 +17,11 @@ import java.util.concurrent.*;
  * @author luxiaocong
  * @createdOn 2020/11/10
  */
-public class HttpConnector implements Contained, Runnable {
+public class HttpConnector implements Connector, Contained, Runnable, Lifecycle {
 
     private Logger logger = new Logger(this.getClass());
+
+    private int port = Constants.SERVER_PORT;
 
     private Container container;
 
@@ -40,7 +44,7 @@ public class HttpConnector implements Contained, Runnable {
     public void run() {
         ServerSocket serverSocket = null;
         try {
-            serverSocket = new ServerSocket(Constants.SERVER_PORT);
+            serverSocket = new ServerSocket(port);
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -64,9 +68,25 @@ public class HttpConnector implements Contained, Runnable {
     }
 
     public void start() {
-        container.start();
+        if (sessionManager != null && sessionManager instanceof Lifecycle) {
+            ((Lifecycle) sessionManager).start();
+        }
         Thread thread = new Thread(this);
         thread.start();
+    }
+
+    public void stop() {
+        if (sessionManager != null && sessionManager instanceof Lifecycle) {
+            ((Lifecycle) sessionManager).stop();
+        }
+    }
+
+    public void addLifecycleListener(LifecycleListener lifecycleListener) {
+
+    }
+
+    public void removeLifecycleListener(LifecycleListener lifecycleListener) {
+
     }
 
     public void setContainer(Container container) {
@@ -83,6 +103,14 @@ public class HttpConnector implements Contained, Runnable {
 
     public void setSessionManager(SessionManager sessionManager) {
         this.sessionManager = sessionManager;
+    }
+
+    public void setPort(int port) {
+        this.port = port;
+    }
+
+    public int getPort() {
+        return this.port;
     }
 
 }

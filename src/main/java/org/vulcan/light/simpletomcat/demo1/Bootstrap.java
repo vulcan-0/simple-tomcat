@@ -18,7 +18,7 @@ import org.vulcan.light.simpletomcat.demo1.container.value.*;
  * @author luxiaocong
  * @createdOn 2020/11/7
  */
-public class HttpServer {
+public class Bootstrap {
 
     private static String simpleServletContainer = "\n" +
             "   _____ _                 __        _____                 __     __     ______            __        _                \n" +
@@ -64,7 +64,14 @@ public class HttpServer {
         HttpConnector connector = new HttpConnector();
         connector.setContainer(engine);
         connector.setSessionManager(new StandardSessionManager());
-        connector.start();
+
+        Service service = new StandardService();
+        service.setContainer(engine);
+        service.addConnector(connector);
+
+        Server server = new StandardServer();
+        server.addService(service);
+        server.start();
     }
 
 }
