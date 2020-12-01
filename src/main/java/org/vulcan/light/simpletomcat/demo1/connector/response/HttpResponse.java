@@ -1,6 +1,7 @@
 package org.vulcan.light.simpletomcat.demo1.connector.response;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
+import org.vulcan.light.simpletomcat.demo1.common.CookieUtils;
 import org.vulcan.light.simpletomcat.demo1.common.HttpStatus;
 import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
 
@@ -26,7 +27,8 @@ public class HttpResponse implements HttpServletResponse {
 
     private int status;
 
-    private Map<String, String> headers = new LinkedHashMap<String, String>();
+    private Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>();
+    private List<Cookie> cookies = new ArrayList<Cookie>();
 
     public HttpResponse(OutputStream output) {
         this.output = output;
@@ -72,8 +74,10 @@ public class HttpResponse implements HttpServletResponse {
     public String getHeaderString() {
         StringBuffer headerBuffer = new StringBuffer();
         for (String name : headers.keySet()) {
-            String value = headers.get(name);
-            headerBuffer.append(name).append(": ").append(value).append("\r\n");
+            List<String> values = headers.get(name);
+            for (String value : values) {
+                headerBuffer.append(name).append(": ").append(value).append("\r\n");
+            }
         }
         return headerBuffer.toString();
     }
@@ -85,9 +89,11 @@ public class HttpResponse implements HttpServletResponse {
 
         StringBuffer headerBuffer = new StringBuffer();
         for (String name : headers.keySet()) {
-            String value = headers.get(name);
-            String str = String.format("%s: %s\r\n", name, value);
-            headerBuffer.append(str);
+            List<String> values = headers.get(name);
+            for (String value : values) {
+                String str = String.format("%s: %s\r\n", name, value);
+                headerBuffer.append(str);
+            }
         }
         writer.setHeaderLine(headerBuffer.toString());
 
@@ -95,7 +101,8 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public void addCookie(Cookie cookie) {
-
+        cookies.add(cookie);
+        addHeader(Constants.SET_COOKIE, CookieUtils.getCookieString(cookie));
     }
 
     public boolean containsHeader(String name) {
@@ -139,11 +146,18 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public void setHeader(String name, String value) {
-        headers.put(name, value);
+        List<String> values = new ArrayList<String>();
+        headers.put(name, values);
+        values.add(value);
     }
 
     public void addHeader(String name, String value) {
-
+        List<String> values = headers.get(name);
+        if (values == null) {
+            values = new ArrayList<String>();
+            headers.put(name, values);
+        }
+        values.add(value);
     }
 
     public void setIntHeader(String name, int value) {
@@ -167,12 +181,16 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public String getHeader(String name) {
+        List<String> values = headers.get(name);
+        if (values != null) {
+            return values.get(values.size() - 1);
+        }
         return null;
     }
 
     public Collection<String> getHeaders(String name) {
         if (headers.get(name) != null) {
-            return Arrays.asList(headers.get(name));
+            return headers.get(name);
         }
         return null;
     }
@@ -191,7 +209,7 @@ public class HttpResponse implements HttpServletResponse {
     }
 
     public String getContentType() {
-        return headers.get(Constants.CONTENT_TYPE);
+        return getHeader(Constants.CONTENT_TYPE.toLowerCase());
     }
 
     public ServletOutputStream getOutputStream() throws IOException {
@@ -204,21 +222,23 @@ public class HttpResponse implements HttpServletResponse {
 
     public void setCharacterEncoding(String charset) {
         String type = getContentType();
-        String[] arr = type.split(";");
-        type = String.format("%s; %s", arr[0], charset);
-        setContentType(type);
+        if (type != null) {
+            String[] arr = type.split(";");
+            type = String.format("%s; %s", arr[0], charset);
+            setContentType(type);
+        }
     }
 
     public void setContentLength(int len) {
-        headers.put(Constants.CONTENT_LENGTH, "" + len);
+        setHeader(Constants.CONTENT_LENGTH, "" + len);
     }
 
     public void setContentLengthLong(long len) {
-        headers.put(Constants.CONTENT_LENGTH, "" + len);
+        setHeader(Constants.CONTENT_LENGTH, "" + len);
     }
 
     public void setContentType(String type) {
-        headers.put(Constants.CONTENT_TYPE, type);
+        setHeader(Constants.CONTENT_TYPE, type);
     }
 
     public void setBufferSize(int size) {

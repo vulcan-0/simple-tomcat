@@ -4,6 +4,7 @@ import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.Logger;
 import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
 import org.vulcan.light.simpletomcat.demo1.container.core.Container;
+import org.vulcan.light.simpletomcat.demo1.container.session.SessionManager;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -23,6 +24,8 @@ public class HttpConnector implements Contained, Runnable {
     private boolean stopped;
 
     private String scheme = "http";
+
+    private SessionManager sessionManager;
 
     public String getScheme() {
         return scheme;
@@ -50,6 +53,7 @@ public class HttpConnector implements Contained, Runnable {
                 TcpConnection connection = TcpConnectionPool.get();
                 connection.setContainer(container);
                 connection.setSocket(socket);
+                connection.setSessionManager(sessionManager);
                 executor.execute(connection);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -71,6 +75,14 @@ public class HttpConnector implements Contained, Runnable {
 
     public Container getContainer() {
         return this.container;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
 }

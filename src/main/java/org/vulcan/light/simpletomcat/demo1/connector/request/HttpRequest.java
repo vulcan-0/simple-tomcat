@@ -1,6 +1,7 @@
 package org.vulcan.light.simpletomcat.demo1.connector.request;
 
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
+import org.vulcan.light.simpletomcat.demo1.container.session.SessionManager;
 
 import javax.servlet.*;
 import javax.servlet.http.*;
@@ -21,10 +22,18 @@ public class HttpRequest implements HttpServletRequest {
 
     private String remoteAddr;
     private String uri;
+    private String queryString;
     String contextPath;
     String servletPath;
 
     private Map<String, List<String>> headers = new LinkedHashMap<String, List<String>>();
+    private Map<String, List<String>> attributes = new HashMap<String, List<String>>();
+    private Map<String, Cookie> cookieMap = new LinkedHashMap<String, Cookie>();
+
+    private SessionManager sessionManager;
+    private HttpSession session;
+    private boolean sessionFromUrl;
+    private boolean sessionFromCookie;
 
     public HttpRequest(InputStream input) {
         this.input = input;
@@ -47,6 +56,12 @@ public class HttpRequest implements HttpServletRequest {
             }
         }
 
+        int ind1 = uri.indexOf("?");
+        if (ind1 != -1) {
+            queryString = uri.substring(ind1 + 1);
+            uri = uri.substring(0, ind1);
+        }
+
         int pos1 = uri.indexOf("/", 1);
         if (pos1 > 0) {
             contextPath = uri.substring(0, pos1);
@@ -54,11 +69,75 @@ public class HttpRequest implements HttpServletRequest {
         }
     }
 
+    public void parseSession() {
+        String sessionId = null;
+        parseQueryString();
+        List<String> values = attributes.get(Constants.JSESSIONID);
+        if (values != null && !values.isEmpty()) {
+            sessionId = values.get(values.size() - 1);
+            sessionFromUrl = true;
+        }
+
+        if (sessionId == null) {
+            sessionFromUrl = false;
+            List<String> cookieStrList = headers.get(Constants.COOKIE.toLowerCase());
+            if (cookieStrList != null && !cookieStrList.isEmpty()) {
+                String cookieStr = cookieStrList.get(cookieStrList.size() - 1);
+                parseCookie(cookieStr);
+                Cookie cookie = cookieMap.get(Constants.JSESSIONID.toLowerCase());
+                if (cookie != null) {
+                    sessionId = cookie.getValue();
+                    sessionFromCookie = true;
+                }
+            }
+        }
+
+        if (sessionId != null) {
+            session = sessionManager.findSession(sessionId);
+        }
+
+        if (session == null) {
+            sessionFromUrl = false;
+            sessionFromCookie = false;
+            session = getSession(true);
+        }
+    }
+
+    private void parseQueryString() {
+        if (queryString != null) {
+            String[] arr = queryString.split("&");
+            for (String str : arr) {
+                String[] nameValue = str.trim().split("=");
+                if (nameValue.length == 2) {
+                    List<String> values = attributes.get(nameValue[0]);
+                    if (values == null) {
+                        values = new ArrayList<String>();
+                        attributes.put(nameValue[0], values);
+                    }
+                    values.add(nameValue[1]);
+                }
+            }
+        }
+    }
+
+    private void parseCookie(String cookieStr) {
+        if (cookieStr != null) {
+            String[] arr = cookieStr.split(";");
+            for (String str : arr) {
+                String[] nameValue = str.trim().split("=");
+                if (nameValue.length == 2) {
+                    Cookie cookie = new Cookie(nameValue[0], nameValue[1]);
+                    cookieMap.put(nameValue[0].toLowerCase(), cookie);
+                }
+            }
+        }
+    }
+
     public void setHeader(String name, String value) {
         List<String> values = headers.get(name);
         if (values == null) {
             values = new ArrayList<String>();
-            headers.put(name, values);
+            headers.put(name.toLowerCase(), values);
         }
         values.add(value);
     }
@@ -68,7 +147,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public boolean isAlive() {
-        List<String> values = headers.get(Constants.CONNECTION);
+        List<String> values = headers.get(Constants.CONNECTION.toLowerCase());
         if (values != null && !values.isEmpty()) {
             if (Constants.KEEP_ALIVE.equals(values.get(values.size() - 1))) {
                 return true;
@@ -82,7 +161,12 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public Cookie[] getCookies() {
-        return new Cookie[0];
+        Cookie[] cookies = new Cookie[cookieMap.size()];
+        int i = 0;
+        for (String name : cookieMap.keySet()) {
+            cookies[i++] = cookieMap.get(name);
+        }
+        return cookies;
     }
 
     public long getDateHeader(String name) {
@@ -90,6 +174,10 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getHeader(String name) {
+        List<String> values = headers.get(name);
+        if (values != null && !values.isEmpty()) {
+            return values.get(values.size() - 1);
+        }
         return null;
     }
 
@@ -105,6 +193,12 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public int getIntHeader(String name) {
+        String value = getHeader(name);
+        try {
+            return Integer.parseInt(value);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 
@@ -125,7 +219,7 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getQueryString() {
-        return null;
+        return queryString;
     }
 
     public String getRemoteUser() {
@@ -141,6 +235,9 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public String getRequestedSessionId() {
+        if (session != null) {
+            return session.getId();
+        }
         return null;
     }
 
@@ -157,11 +254,14 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public HttpSession getSession(boolean create) {
-        return null;
+        if (create && session == null) {
+            session = sessionManager.createSession();
+        }
+        return session;
     }
 
     public HttpSession getSession() {
-        return null;
+        return session;
     }
 
     public String changeSessionId() {
@@ -173,15 +273,15 @@ public class HttpRequest implements HttpServletRequest {
     }
 
     public boolean isRequestedSessionIdFromCookie() {
-        return false;
+        return sessionFromCookie;
     }
 
     public boolean isRequestedSessionIdFromURL() {
-        return false;
+        return sessionFromUrl;
     }
 
     public boolean isRequestedSessionIdFromUrl() {
-        return false;
+        return sessionFromUrl;
     }
 
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
@@ -354,6 +454,14 @@ public class HttpRequest implements HttpServletRequest {
 
     public DispatcherType getDispatcherType() {
         return null;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
 }

@@ -7,13 +7,12 @@ import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleContextLife
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleEngineLifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleHostLifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleWrapperLifecycleListener;
+import org.vulcan.light.simpletomcat.demo1.container.session.StandardSessionManager;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardContext;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardEngine;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardHost;
 import org.vulcan.light.simpletomcat.demo1.container.standard.StandardWrapper;
-import org.vulcan.light.simpletomcat.demo1.container.value.ClientIpLoggerValue;
-import org.vulcan.light.simpletomcat.demo1.container.value.HeaderLoggerValue;
-import org.vulcan.light.simpletomcat.demo1.container.value.ServerInternalErrorValue;
+import org.vulcan.light.simpletomcat.demo1.container.value.*;
 
 /**
  * @author luxiaocong
@@ -51,20 +50,20 @@ public class HttpServer {
         host.addChild(context);
         host.addLifecycleListener(new SimpleHostLifecycleListener());
 
-        Engine engine = new StandardEngine();
+        StandardEngine engine = new StandardEngine();
         engine.setName(Constants.DEFAULT_ENGINE_NAME);
         engine.addChild(host);
         engine.addLifecycleListener(new SimpleEngineLifecycleListener());
 
-        ClientIpLoggerValue clientIpLoggerValue = new ClientIpLoggerValue();
-        ((AbstractContainerBase) engine).addValue(clientIpLoggerValue);
-        HeaderLoggerValue headerLoggerValue = new HeaderLoggerValue();
-        ((AbstractContainerBase) engine).addValue(headerLoggerValue);
-        ServerInternalErrorValue serverInternalErrorValue = new ServerInternalErrorValue();
-        ((AbstractContainerBase) engine).addValue(serverInternalErrorValue);
+        engine.addValue(new ClientIpLoggerValue());
+        engine.addValue(new CookieValue());
+        engine.addValue(new SessionValue());
+        engine.addValue(new HeaderLoggerValue());
+        engine.addValue(new ServerInternalErrorValue());
 
         HttpConnector connector = new HttpConnector();
         connector.setContainer(engine);
+        connector.setSessionManager(new StandardSessionManager());
         connector.start();
     }
 

@@ -21,7 +21,7 @@ public class HttpResponseFacade implements HttpServletResponse {
     }
 
     public void addCookie(Cookie cookie) {
-
+        response.addCookie(cookie);
     }
 
     public boolean containsHeader(String name) {
@@ -65,11 +65,11 @@ public class HttpResponseFacade implements HttpServletResponse {
     }
 
     public void setHeader(String name, String value) {
-
+        response.setHeader(name, value);
     }
 
     public void addHeader(String name, String value) {
-
+        response.addHeader(name, value);
     }
 
     public void setIntHeader(String name, int value) {
@@ -93,7 +93,7 @@ public class HttpResponseFacade implements HttpServletResponse {
     }
 
     public String getHeader(String name) {
-        return null;
+        return response.getHeader(name);
     }
 
     public Collection<String> getHeaders(String name) {

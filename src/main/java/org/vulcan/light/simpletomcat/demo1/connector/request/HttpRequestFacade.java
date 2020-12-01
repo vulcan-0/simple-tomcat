@@ -28,15 +28,15 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public Cookie[] getCookies() {
-        return new Cookie[0];
+        return request.getCookies();
     }
 
     public long getDateHeader(String name) {
-        return 0;
+        return request.getDateHeader(name);
     }
 
     public String getHeader(String name) {
-        return null;
+        return request.getHeader(name);
     }
 
     public Enumeration<String> getHeaders(String name) {
@@ -48,7 +48,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public int getIntHeader(String name) {
-        return 0;
+        return request.getIntHeader(name);
     }
 
     public String getMethod() {
@@ -68,7 +68,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getQueryString() {
-        return null;
+        return request.getQueryString();
     }
 
     public String getRemoteUser() {
@@ -84,7 +84,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getRequestedSessionId() {
-        return null;
+        return request.getRequestedSessionId();
     }
 
     public String getRequestURI() {
@@ -100,31 +100,31 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public HttpSession getSession(boolean create) {
-        return null;
+        return request.getSession(create);
     }
 
     public HttpSession getSession() {
-        return null;
+        return request.getSession();
     }
 
     public String changeSessionId() {
-        return null;
+        return request.changeSessionId();
     }
 
     public boolean isRequestedSessionIdValid() {
-        return false;
+        return request.isRequestedSessionIdValid();
     }
 
     public boolean isRequestedSessionIdFromCookie() {
-        return false;
+        return request.isRequestedSessionIdFromCookie();
     }
 
     public boolean isRequestedSessionIdFromURL() {
-        return false;
+        return request.isRequestedSessionIdFromURL();
     }
 
     public boolean isRequestedSessionIdFromUrl() {
-        return false;
+        return request.isRequestedSessionIdFromUrl();
     }
 
     public boolean authenticate(HttpServletResponse response) throws IOException, ServletException {
@@ -152,11 +152,11 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public Object getAttribute(String name) {
-        return null;
+        return request.getAttribute(name);
     }
 
     public Enumeration<String> getAttributeNames() {
-        return null;
+        return request.getAttributeNames();
     }
 
     public String getCharacterEncoding() {
@@ -176,7 +176,7 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public String getContentType() {
-        return null;
+        return request.getContentType();
     }
 
     public ServletInputStream getInputStream() throws IOException {
@@ -228,11 +228,11 @@ public class HttpRequestFacade implements HttpServletRequest {
     }
 
     public void setAttribute(String name, Object o) {
-
+        request.setAttribute(name, o);
     }
 
     public void removeAttribute(String name) {
-
+        request.removeAttribute(name);
     }
 
     public Locale getLocale() {

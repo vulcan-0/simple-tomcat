@@ -6,6 +6,7 @@ import org.vulcan.light.simpletomcat.demo1.connector.request.HttpRequest;
 import org.vulcan.light.simpletomcat.demo1.connector.response.HttpResponse;
 import org.vulcan.light.simpletomcat.demo1.container.core.Contained;
 import org.vulcan.light.simpletomcat.demo1.container.core.Container;
+import org.vulcan.light.simpletomcat.demo1.container.session.SessionManager;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -27,6 +28,8 @@ public class TcpConnection implements Contained, Runnable {
     private boolean keepIt;
     private boolean keepAlive;
     private int keepAliveTime;
+
+    private SessionManager sessionManager;
 
     public void setSocket(Socket socket) {
         this.socket = socket;
@@ -62,9 +65,11 @@ public class TcpConnection implements Contained, Runnable {
             keepAliveTime = Constants.DEFAULT_KEEP_ALIVE_TIME;
 
             request = new HttpRequest(input);
+            request.setSessionManager(sessionManager);
             request.setRemoteAddr(getIp(socket));
             parseRequest(reader, output);
             parseHeaders(reader);
+            request.parseSession();
 
             response = new HttpResponse(output);
             response.setRequest(request);
@@ -128,6 +133,14 @@ public class TcpConnection implements Contained, Runnable {
 
     public Container getContainer() {
         return this.container;
+    }
+
+    public SessionManager getSessionManager() {
+        return sessionManager;
+    }
+
+    public void setSessionManager(SessionManager sessionManager) {
+        this.sessionManager = sessionManager;
     }
 
 }
