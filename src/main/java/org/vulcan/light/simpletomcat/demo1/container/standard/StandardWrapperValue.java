@@ -3,11 +3,9 @@ package org.vulcan.light.simpletomcat.demo1.container.standard;
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.common.HttpStatus;
 import org.vulcan.light.simpletomcat.demo1.container.core.*;
+import org.vulcan.light.simpletomcat.demo1.container.filter.ApplicationFilterChain;
 
-import javax.servlet.Servlet;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
+import javax.servlet.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -28,7 +26,11 @@ public class StandardWrapperValue implements Value, Contained {
         if (myClass != null) {
             try {
                 Servlet servlet = (Servlet) myClass.newInstance();
-                servlet.service(request, response);
+                ApplicationFilterChain filterChain = new ApplicationFilterChain();
+                StandardContext standardContext = (StandardContext) container.getParent();
+                filterChain.setServlet(servlet);
+                filterChain.setFilterConfigs(standardContext.findFilterConfigs());
+                filterChain.doFilter(request, response);
             } catch (InstantiationException e) {
                 e.printStackTrace();
             } catch (IllegalAccessException e) {

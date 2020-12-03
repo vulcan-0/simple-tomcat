@@ -3,6 +3,8 @@ package org.vulcan.light.simpletomcat.demo1;
 import org.vulcan.light.simpletomcat.demo1.common.Constants;
 import org.vulcan.light.simpletomcat.demo1.connector.HttpConnector;
 import org.vulcan.light.simpletomcat.demo1.container.core.*;
+import org.vulcan.light.simpletomcat.demo1.container.filter.ApplicationFilterConfig;
+import org.vulcan.light.simpletomcat.demo1.container.filter.FilterDef;
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleContextLifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleEngineLifecycleListener;
 import org.vulcan.light.simpletomcat.demo1.container.lifecycle.SimpleHostLifecycleListener;
@@ -44,6 +46,11 @@ public class Bootstrap {
         context.setName("/servlet");
         context.addChild(wrapper);
         context.addLifecycleListener(new SimpleContextLifecycleListener());
+        FilterDef filterDef = new FilterDef();
+        filterDef.setFilterName("SimpleFilter");
+        filterDef.setFilterClass("org.vulcan.light.simpletomcat.demo1.container.filter.SimpleFilter");
+        ApplicationFilterConfig filterConfig = new ApplicationFilterConfig(context, filterDef);
+        context.addFilterConfig(filterConfig);
 
         Host host = new StandardHost();
         host.setName(Constants.DEFAULT_HOST_NAME);
@@ -54,7 +61,6 @@ public class Bootstrap {
         engine.setName(Constants.DEFAULT_ENGINE_NAME);
         engine.addChild(host);
         engine.addLifecycleListener(new SimpleEngineLifecycleListener());
-
         engine.addValue(new ClientIpLoggerValue());
         engine.addValue(new CookieValue());
         engine.addValue(new SessionValue());
